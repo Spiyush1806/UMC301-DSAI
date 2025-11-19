@@ -1,53 +1,59 @@
-# Thermophysical Property: Melting Point
-UMC301(DSAI) - Kaggle project
+Thermophysical Property Prediction: Melting Point (Tm)
+UMC301 – Applied Data Science & Artificial Intelligence (DSAI) – Kaggle Project
+Project Overview
 
+This repository contains my complete solution for the UMC301 Kaggle project, where the goal is to accurately predict the melting point (Tm) of molecules.
 
-This notebook is my submission for the UMC301(DSAI) - Kaggle project.
-Before running the code, please adjust the file paths as this notebook was originally executed on ubuntu (Vscode).
+The project combines the power of cheminformatics and machine learning, using RDKit to extract meaningful chemical features and advanced ensemble models to make final predictions. The entire workflow is designed to be easy to run, reproducible, and adaptable for further experimentation.
 
+Note: The code was originally executed in an Ubuntu + VSCode environment. Please adjust file paths based on your setup.
 
-This repository contains a complete end-to-end machine learning pipeline for predicting molecular melting points (Tm) using:
+What This Project Aims to Teach
 
-RDKit molecular descriptors
+This project isn’t just about generating predictions — it helps reinforce many important concepts in applied data science and molecular property modeling. Through the workflow, you learn how to:
 
-Morgan count fingerprints
+Use RDKit to extract descriptors and fingerprints from molecules
 
-MACCS keys
+Apply feature selection to reduce noise and focus on informative variables
 
-Per-fold feature selection
+Train multiple ML models efficiently using cross-validation
 
-Optuna hyperparameter tuning
+Use Optuna to automate hyperparameter tuning (when needed)
 
-XGBoost, LightGBM, CatBoost, and HistGradientBoosting
+Build a stacked ensemble to combine strengths of different models
 
-Meta-model stacking with Ridge regression
+Produce a polished, Kaggle-ready output file
 
-Final Kaggle-style submission CSV
+How the Pipeline Works
+1. Feature Engineering with RDKit
 
-The full workflow is implemented in a single Python script (full_pipeline.py).
+To understand each molecule in depth, the pipeline creates a rich set of chemical features:
 
-🚀 Key Features
-🔬 1. RDKit Feature Engineering
-
-The pipeline automatically generates:
-
-9 basic RDKit descriptors (MolWt, LogP, TPSA, etc.)
+9 essential RDKit descriptors (like MolWt, LogP, TPSA)
 
 2048-bit Morgan count fingerprints
 
 167-bit MACCS keys
 
-🧹 2. Intelligent Feature Selection
+These features help the models capture molecular size, shape, structure, and chemical behavior.
 
-Per-fold LightGBM SelectFromModel chooses the most predictive features, improving model speed and accuracy.
+2. Feature Selection (Per Fold)
 
-🎛 3. Auto Hyperparameter Optimization
+Every fold of cross-validation performs its own feature selection using LightGBM’s SelectFromModel.
+This helps the model focus only on the features that truly matter, making training faster and predictions more stable.
 
-Includes optional Optuna tuning for LightGBM parameters (tune_lgb_params()).
+3. Hyperparameter Tuning (Optional)
 
-🤖 4. Strong Ensemble Models
+If you want to squeeze out extra accuracy, you can run automated tuning with Optuna using:
 
-Each fold trains:
+tune_lgb_params()
+
+
+This step searches for the best LightGBM settings using cross-validated scores.
+
+4. Training the Ensemble Models
+
+Each fold trains multiple strong gradient boosting models:
 
 LightGBM
 
@@ -55,23 +61,27 @@ XGBoost
 
 HistGradientBoosting
 
-(Optional) CatBoost
+CatBoost (optional)
 
-With target Yeo-Johnson transformation and per-fold early stopping.
+To keep everything consistent, the target variable is transformed using Yeo-Johnson and early stopping is used to avoid overfitting.
 
-🧠 5. Stack Ensemble Meta-Learner
+5. Meta-Model Stacking
 
-Final predictions are produced by a Ridge regression meta-model trained on out-of-fold predictions.
+To get the best final prediction, a Ridge Regression meta-model is trained on the out-of-fold predictions from all the base models.
+This stacking approach usually performs better than any single model alone.
 
-📤 6. Submission File Generation
-## OUTPUT
+6. Final Submission
+
+Once the pipeline finishes, it creates a clean Kaggle submission file:
+
 submission_full_pipeline.csv
 
-📁 Repository Structure
 
-├── full_pipeline.py      
-├── train.csv                
-├── test.csv                 
-├── sample_submission.csv    
-├── README.md
+Upload this to Kaggle to see your score!
 
+Repository Structure
+├── full_pipeline.py            # Complete pipeline script
+├── train.csv                   # Training dataset
+├── test.csv                    # Test dataset for Kaggle
+├── sample_submission.csv       
+├── README.md                   
