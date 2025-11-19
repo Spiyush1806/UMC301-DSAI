@@ -26,24 +26,24 @@ Build a stacked ensemble to combine strengths of different models
 Produce a polished, Kaggle-ready output file
 
 ## How the Pipeline Works
-** 1. Feature Engineering with RDKit
+**1. Feature Engineering with RDKit**
 
-** To understand each molecule in depth, the pipeline creates a rich set of chemical features:
+**To understand each molecule in depth, the pipeline creates a rich set of chemical features:**
 
-** 9 essential RDKit descriptors (like MolWt, LogP, TPSA)
+**9 essential RDKit descriptors (like MolWt, LogP, TPSA)**
 
-** 2048-bit Morgan count fingerprints
+**2048-bit Morgan count fingerprints**
 
-** 167-bit MACCS keys
+**167-bit MACCS keys**
 
-** These features help the models capture molecular size, shape, structure, and chemical behavior.
+**These features help the models capture molecular size, shape, structure, and chemical behavior.**
 
-2. Feature Selection (Per Fold)
+## 2. Feature Selection (Per Fold)
 
 Every fold of cross-validation performs its own feature selection using LightGBM’s SelectFromModel.
 This helps the model focus only on the features that truly matter, making training faster and predictions more stable.
 
-3. Hyperparameter Tuning (Optional)
+## 3. Hyperparameter Tuning (Optional)
 
 If you want to squeeze out extra accuracy, you can run automated tuning with Optuna using:
 
@@ -52,37 +52,39 @@ tune_lgb_params()
 
 This step searches for the best LightGBM settings using cross-validated scores.
 
-4. Training the Ensemble Models
+## 4. Training the Ensemble Models
 
 Each fold trains multiple strong gradient boosting models:
 
-LightGBM
+**LightGBM**
 
-XGBoost
+**XGBoost**
 
-HistGradientBoosting
+**HistGradientBoosting**
 
-CatBoost (optional)
+**CatBoost (optional)**
 
 To keep everything consistent, the target variable is transformed using Yeo-Johnson and early stopping is used to avoid overfitting.
 
-5. Meta-Model Stacking
+## 5. Meta-Model Stacking
 
 To get the best final prediction, a Ridge Regression meta-model is trained on the out-of-fold predictions from all the base models.
 This stacking approach usually performs better than any single model alone.
 
-6. Final Submission
+## 6. Final Submission
 
 Once the pipeline finishes, it creates a clean Kaggle submission file:
 
 submission_full_pipeline.csv
 
 
-Upload this to Kaggle to see your score!
+## Repository Structure
+├── full_pipeline.py  
 
-Repository Structure
-├── full_pipeline.py            # Complete pipeline script
-├── train.csv                   # Training dataset
-├── test.csv                    # Test dataset for Kaggle
-├── sample_submission.csv       
+├── train.csv  
+
+├── test.csv
+
+├── sample_submission.csv 
+
 ├── README.md                   
